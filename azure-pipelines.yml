@@ -1,10 +1,10 @@
 ### YamlMime:Yaml
-ms.openlocfilehash: 1f16ddecd0df0d946cdcc20c946ed58193f9f1c2
-ms.sourcegitcommit: 957267b4f9d3c90fb2a76326586b08e1a5898694
+ms.openlocfilehash: e8e0c0487370439eb50ee376aa05769b8455f241
+ms.sourcegitcommit: 57d343a6c7c2aa43c9f007d7823891d2141eb471
 ms.translationtype: HT
 ms.contentlocale: ru-RU
-ms.lasthandoff: 07/03/2021
-ms.locfileid: "113282388"
+ms.lasthandoff: 07/01/2021
+ms.locfileid: "113169706"
 trigger:
 - '*'
 pool:
@@ -13,43 +13,31 @@ pool:
   - npm
 variables:
   buildConfiguration: Release
-  wwwrootDir: Tailspin.SpaceGame.Web/wwwroot
-  dotnetSdkVersion: 5.x
 steps:
 - task: UseDotNet@2
-  displayName: Use .NET SDK $(dotnetSdkVersion)
+  displayName: Use .NET SDK 5.x
   inputs:
-    version: $(dotnetSdkVersion)
+    packageType: sdk
+    version: 5.x
 - task: Npm@1
   displayName: Run npm install
   inputs:
     verbose: false
-- script: ./node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)
+- script: ./node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot
   displayName: Compile Sass assets
 - task: gulp@1
   displayName: Run gulp tasks
 - script: echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt
   displayName: Write build info
-  workingDirectory: $(wwwrootDir)
+  workingDirectory: Tailspin.SpaceGame.Web/wwwroot
 - task: DotNetCoreCLI@2
   displayName: Restore project dependencies
   inputs:
     command: restore
     projects: '**/*.csproj'
 - task: DotNetCoreCLI@2
-  displayName: Build the project - $(buildConfiguration)
+  displayName: Build the project - Release
   inputs:
     command: build
-    arguments: --no-restore --configuration $(buildConfiguration)
+    arguments: --no-restore --configuration Release
     projects: '**/*.csproj'
-- task: DotNetCoreCLI@2
-  displayName: Publish the project - $(buildConfiguration)
-  inputs:
-    command: publish
-    projects: '**/*.csproj'
-    publishWebProjects: false
-    arguments: --no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)
-    zipAfterPublish: true
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  condition: succeeded()
