@@ -1,3 +1,4 @@
+[![Build Status](https://dev.azure.com/radioMYT/Space%20Game%20-%20web%20-%20Wf/_apis/build/status/syberianec.mslearn-tailspin-spacegame-web?branchName=main)](https://dev.azure.com/radioMYT/Space%20Game%20-%20web%20-%20Wf/_build/latest?definitionId=4&branchName=main)
 
 # Contributing
 
